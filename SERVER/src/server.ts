@@ -2,13 +2,24 @@ import express from 'express';
 
 const app = express();
 
-app.get('/user',(request,response)=>{
+app.get('/users',(request,response)=>{
     console.log('Listagem de usuários');
 
-    response.json([
+    return response.json([
         'Antonio',
-        'Maria'
+        'Maria',
+        'Cleito',
+        'Daniel',
+        'Pedro'
     ]);
 }); 
+
+app.post('/users',(request,response) => {
+    const user = {
+        name: 'Diego',
+        email:'diego@rocketseat.com.br'
+    };
+    return response.json(user);
+});
 
 app.listen(3333);
