@@ -2,22 +2,40 @@ import express from 'express';
 
 const app = express();
 
-app.get('/users',(request,response)=>{
-    console.log('Listagem de usuários');
+app.use(express.json());
 
-    return response.json([
-        'Antonio',
-        'Maria',
-        'Cleito',
-        'Daniel',
-        'Pedro'
-    ]);
+const users = [
+    'Antonio',
+    'Maria',
+    'Cleito',
+    'Daniel',
+    'Pedro'
+]
+
+app.get('/users',(request,response)=>{
+    const search = String(request.query.search);
+
+    const filterUsers = search ? users.filter(user => user.includes(search)) : users ;
+
+    return response.json(filterUsers);
 }); 
 
+app.get('/users/:id',(request,response) => {
+    const id = Number(request.params.id);
+
+    const user = users[id];
+
+    return response.json(user);
+});
+
 app.post('/users',(request,response) => {
+    const data = request.body;
+
+    console.log(data);
+    
     const user = {
-        name: 'Diego',
-        email:'diego@rocketseat.com.br'
+        name: data.name,
+        email:data.email
     };
     return response.json(user);
 });
