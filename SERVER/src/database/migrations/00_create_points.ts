@@ -19,6 +19,5 @@ export async function up(knex: Knex){
 
 export async function down(knex: Knex){
     //refazer alterações
-
     return knex.schema.dropTable('points');
 }
