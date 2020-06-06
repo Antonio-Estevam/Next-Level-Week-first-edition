@@ -1,5 +1,5 @@
 import React, {useEffect, useState, ChangeEvent, FormEvent} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
@@ -21,10 +21,6 @@ interface IBGEUFResponse {
 interface IBGECityResponse {
     nome: string;
 }
-/*
-interface UF {
-    name: string;
-}*/
 
 const CreatePoint = () => {
     const [items, setItems] = useState<Item[]>([]);
@@ -39,6 +35,8 @@ const CreatePoint = () => {
         whatsapp:'',
     });
 
+    const history = useHistory();
+
     const [selectedUf, setselectedUf] = useState("0")
     const [selectedCity, setSelectedCity] = useState("0")
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -46,8 +44,7 @@ const CreatePoint = () => {
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(position => {
-            const {latitude, longitude} = position.coords;
-
+            const {latitude, longitude} = position.coords;                
             setInitialPosition([latitude, longitude]);            
         });
     },[]);
@@ -97,7 +94,7 @@ const CreatePoint = () => {
             setSelectedPosition([
                 event.latlng.lat,
                 event.latlng.lng,
-            ])
+            ]);
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -119,12 +116,13 @@ const CreatePoint = () => {
         
     }
 
-    function handleSubmit(event: FormEvent){
+    async function handleSubmit(event: FormEvent){
         event.preventDefault();
 
         const { name, email, whatsapp } = formData;
         const uf = selectedUf;
         const city = selectedCity;
+        const { "0":latitude,"1":longitude } = selectedPosition; 
         const items = selectedItems;
 
 /*FALTA LATITUDE E LONGITUDE */
@@ -133,16 +131,17 @@ const CreatePoint = () => {
             name,
             email,
             whatsapp,
-            /*latitude,
-            longitude,*/
+            latitude,
+            longitude,
             uf,
             city,
             items                        
         };
+        await api.post('points',data);
 
-        console.log(data);
-        
+        alert("Ponto de colta criado");
 
+        history.push('/');
     }
 
     return(
